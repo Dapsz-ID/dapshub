@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapsz-Sharing - Test Page</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Dapsz-Sharing - Test</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn" onclick="goToIndex()">Login</button>
+                <button class="nav-btn" onclick="goToDashboard()">Dashboard</button>
+                <button class="nav-btn" onclick="clearAllData()">Clear Data</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="user-profile">
+                <h2>Test Functionality</h2>
+                <p>This page helps test the view-only functionality for non-owners.</p>
+                <div class="user-stats">
+                    <div class="stat">
+                        <span id="user-count">0</span>
+                        <span>Users</span>
+                    </div>
+                    <div class="stat">
+                        <span id="repo-count">0</span>
+                        <span>Repos</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <h3>Quick Actions</h3>
+                <div class="dashboard-actions">
+                    <button class="btn-primary" onclick="createTestUsers()">Create Test Users</button>
+                    <button class="btn-secondary" onclick="createTestRepos()">Create Test Repos</button>
+                    <button class="btn-secondary" onclick="loginAsUser1()">Login as User1</button>
+                    <button class="btn-secondary" onclick="loginAsUser2()">Login as User2</button>
+                </div>
+
+                <div class="repos-list">
+                    <div class="repo-card">
+                        <h4>Test Scenarios</h4>
+                        <p>Test the view-only functionality:</p>
+                        <ul style="margin: 1rem 0; padding-left: 1.5rem;">
+                            <li>1. Create test users and repositories</li>
+                            <li>2. Login as User1 (owner)</li>
+                            <li>3. View User1's repository - should see edit options</li>
+                            <li>4. Login as User2 (non-owner)</li>
+                            <li>5. View User1's repository - should see "View Only" badge</li>
+                            <li>6. Try to access file viewer - should be read-only</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="test-results" class="repos-list">
+                    <!-- Test results will be shown here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        function goToIndex() {
+            window.location.href = 'index.html';
+        }
+
+        function goToDashboard() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This will delete all users and repositories.')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        function createTestUsers() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            // Create User1
+            users['testuser1'] = {
+                password: 'password123',
+                profile: {
+                    photo: 'https://files.catbox.moe/n94mxl.png',
+                    bio: 'Test User 1 - Repository Owner'
+                },
+                repos: {},
+                following: [],
+                followers: []
+            };
+
+            // Create User2
+            users['testuser2'] = {
+                password: 'password123',
+                profile: {
+                    photo: 'https://files.catbox.moe/n94mxl.png',
+                    bio: 'Test User 2 - Viewer'
+                },
+                repos: {},
+                following: [],
+                followers: []
+            };
+
+            localStorage.setItem('users', JSON.stringify(users));
+            updateTestResults();
+            alert('Test users created! Login with username: testuser1 or testuser2, password: password123');
+        }
+
+        function createTestRepos() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            
+            if (!users['testuser1']) {
+                alert('Please create test users first!');
+                return;
+            }
+
+            // Create repository for User1
+            users['testuser1'].repos['test-repo'] = {
+                description: 'A test repository for view-only functionality',
+                files: [
+                    {
+                        name: 'README.md',
+                        content: '# Test Repository\n\nThis is a test repository to demonstrate view-only functionality.\n\n## Features\n- View-only access for non-owners\n- Full edit access for owners\n- Syntax highlighting\n- Markdown preview',
+                        type: 'markdown'
+                    },
+                    {
+                        name: 'index.js',
+                        content: '// Test JavaScript file\nfunction greet(name) {\n    console.log(`Hello, ${name}!`);\n}\n\ngreet("World");',
+                        type: 'javascript'
+                    },
+                    {
+                        name: 'style.css',
+                        content: '/* Test CSS file */\nbody {\n    background-color: #0d1117;\n    color: #c9d1d9;\n    font-family: Arial, sans-serif;\n}',
+                        type: 'css'
+                    }
+                ],
+                likes: 0,
+                comments: [],
+                followers: []
+            };
+
+            localStorage.setItem('users', JSON.stringify(users));
+            updateTestResults();
+            alert('Test repository created for User1!');
+        }
+
+        function loginAsUser1() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!users['testuser1']) {
+                alert('Please create test users first!');
+                return;
+            }
+            
+            currentUser = 'testuser1';
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            window.location.href = 'dashboard.html';
+        }
+
+        function loginAsUser2() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            if (!users['testuser2']) {
+                alert('Please create test users first!');
+                return;
+            }
+            
+            currentUser = 'testuser2';
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            window.location.href = 'dashboard.html';
+        }
+
+        function updateTestResults() {
+            const users = JSON.parse(localStorage.getItem('users') || '{}');
+            const userCount = Object.keys(users).length;
+            let repoCount = 0;
+            
+            Object.values(users).forEach(user => {
+                repoCount += Object.keys(user.repos || {}).length;
+            });
+
+            document.getElementById('user-count').textContent = userCount;
+            document.getElementById('repo-count').textContent = repoCount;
+
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = `
+                <div class="repo-card">
+                    <h4>Current Data Status</h4>
+                    <p><strong>Users:</strong> ${userCount}</p>
+                    <p><strong>Repositories:</strong> ${repoCount}</p>
+                    <p><strong>Current User:</strong> ${currentUser || 'Not logged in'}</p>
+                </div>
+            `;
+
+            if (userCount > 0) {
+                const userList = document.createElement('div');
+                userList.className = 'repo-card';
+                userList.innerHTML = '<h4>Available Users</h4>';
+                
+                Object.keys(users).forEach(username => {
+                    const user = users[username];
+                    const repoNames = Object.keys(user.repos || {});
+                    userList.innerHTML += `
+                        <div style="margin: 0.5rem 0; padding: 0.5rem; background-color: #0d1117; border-radius: 4px;">
+                            <strong>${username}</strong>
+                            <br><small>Bio: ${user.profile.bio || 'No bio'}</small>
+                            <br><small>Repositories: ${repoNames.join(', ') || 'None'}</small>
+                        </div>
+                    `;
+                });
+                
+                resultsDiv.appendChild(userList);
+            }
+        }
+
+        // Initialize test page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const loggedInUser = localStorage.getItem('currentUser');
+            if (loggedInUser) {
+                currentUser = JSON.parse(loggedInUser);
+            }
+            
+            updateTestResults();
+        });
+    </script>
+</body>
+</html>
