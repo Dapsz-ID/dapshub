@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapsz-Sharing - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Dapsz-Sharing</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn" onclick="showGlobalSearch()">Search</button>
+                <button class="nav-btn" onclick="goToSettings()">Settings</button>
+                <button class="nav-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="user-profile">
+                <img id="user-avatar" src="https://files.catbox.moe/n94mxl.png" alt="Profile" class="avatar">
+                <h2 id="user-username">Username</h2>
+                <p id="user-bio" class="bio">No bio yet</p>
+                <div class="user-stats">
+                    <div class="stat">
+                        <span id="followers-count">0</span>
+                        <span>Followers</span>
+                    </div>
+                    <div class="stat">
+                        <span id="following-count">0</span>
+                        <span>Following</span>
+                    </div>
+                    <div class="stat">
+                        <span id="repos-count">0</span>
+                        <span>Repositories</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+                <div class="dashboard-header">
+                    <h3>Your Repositories</h3>
+                    <div class="dashboard-actions">
+                        <input type="text" id="repo-search" placeholder="Search your repositories..." class="search-input">
+                        <button class="btn-primary" onclick="showCreateRepo()">New Repository</button>
+                    </div>
+                </div>
+
+                <div id="repos-list" class="repos-list">
+                    <!-- Repositories will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Repository Modal -->
+    <div id="create-repo-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Repository</h3>
+                <button class="close-btn" onclick="closeCreateRepo()">&times;</button>
+            </div>
+            <form onsubmit="createRepository(event)">
+                <div class="form-group">
+                    <label for="repo-name">Repository Name</label>
+                    <input type="text" id="repo-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="repo-description">Description (Optional)</label>
+                    <textarea id="repo-description" rows="3"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="closeCreateRepo()">Cancel</button>
+                    <button type="submit" class="btn-primary">Create Repository</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Global Search Modal -->
+    <div id="global-search-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Global Search</h3>
+                <button class="close-btn" onclick="closeGlobalSearch()">&times;</button>
+            </div>
+            <div class="search-container">
+                <input type="text" id="global-search-input" placeholder="Search repositories..." class="search-input">
+                <button class="btn-primary" onclick="performGlobalSearch()">Search</button>
+            </div>
+            <div id="global-search-results" class="search-results">
+                <!-- Search results will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
