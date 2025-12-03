@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dapsz-Sharing - Settings</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <h1>Dapsz-Sharing</h1>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn" onclick="goToDashboard()">Dashboard</button>
+                <button class="nav-btn" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="settings-container">
+            <div class="settings-sidebar">
+                <h3>Settings</h3>
+                <ul class="settings-menu">
+                    <li><a href="#" class="active" onclick="showProfileSettings()">Profile</a></li>
+                    <li><a href="#" onclick="showPasswordSettings()">Password</a></li>
+                    <li><a href="#" onclick="showDangerZone()">Danger Zone</a></li>
+                </ul>
+            </div>
+
+            <div class="settings-content">
+                <!-- Profile Settings -->
+                <div id="profile-settings" class="settings-section">
+                    <h3>Profile Settings</h3>
+                    <form onsubmit="updateProfile(event)">
+                        <div class="form-group">
+                            <label for="profile-photo">Profile Photo URL</label>
+                            <input type="url" id="profile-photo" placeholder="https://example.com/photo.jpg">
+                            <small>Leave empty to use default photo</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-bio">Bio</label>
+                            <textarea id="profile-bio" rows="4" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Update Profile</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Password Settings -->
+                <div id="password-settings" class="settings-section" style="display: none;">
+                    <h3>Change Password</h3>
+                    <form onsubmit="updatePassword(event)">
+                        <div class="form-group">
+                            <label for="current-password">Current Password</label>
+                            <input type="password" id="current-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">New Password</label>
+                            <input type="password" id="new-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-new-password">Confirm New Password</label>
+                            <input type="password" id="confirm-new-password" required>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary">Change Password</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div id="danger-zone" class="settings-section" style="display: none;">
+                    <h3>Danger Zone</h3>
+                    <div class="danger-zone-content">
+                        <div class="danger-warning">
+                            <h4>Delete Account</h4>
+                            <p>Once you delete your account, there is no going back. This will permanently delete all your repositories and data.</p>
+                            <button class="btn-danger" onclick="showDeleteAccountModal()">Delete Account</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="delete-account-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Delete Account</h3>
+                <button class="close-btn" onclick="closeDeleteAccountModal()">&times;</button>
+            </div>
+            <div class="delete-account-content">
+                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+                <form onsubmit="deleteAccount(event)">
+                    <div class="form-group">
+                        <label for="delete-password">Enter your password to confirm</label>
+                        <input type="password" id="delete-password" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="closeDeleteAccountModal()">Cancel</button>
+                        <button type="submit" class="btn-danger">Delete Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
